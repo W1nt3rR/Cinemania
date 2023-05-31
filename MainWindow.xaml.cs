@@ -24,5 +24,10 @@ namespace Cinemania
         {
             InitializeComponent();
         }
+
+        private void Foo(object sender, RoutedEventArgs e)
+        {
+            label1.Content = "Label";
+        }
     }
 }
