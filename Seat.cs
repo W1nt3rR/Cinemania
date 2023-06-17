@@ -19,16 +19,12 @@ namespace Cinemania
         public int Row { get; set; }
         public int Column { get; set; }
 
-        public Seat(int row, int column, bool taken = false)
+        public Seat(int row, int column, bool taken, bool reserved = false)
         {
             this.Row = row;
             this.Column = column;
-
-            // Generate a random Number
-            var num = GenerateRandomNumber(100);
-
-            // Randomize taken seats
-            this.Taken = (num > 75) || false;
+            this.Taken = taken;
+            this.Reserved = reserved;
 
             // Set color based on if it the seat is taken
             Brush customColor = this.Taken ? new SolidColorBrush(Colors.Red) : new SolidColorBrush(Colors.Green);
@@ -51,27 +47,6 @@ namespace Cinemania
             this.rectangle.MouseLeave += SeatLeave;
             this.rectangle.MouseEnter += SeatEnter;
 
-        }
-
-        private int GenerateRandomNumber(int maxNumber)
-        {
-            // Create a byte array to store the random number
-            byte[] randomNumber = new byte[4];
-
-            // Create an instance of RandomNumberGenerator
-            using (RandomNumberGenerator rng = RandomNumberGenerator.Create())
-            {
-                // Fill the byte array with random numbers
-                rng.GetBytes(randomNumber);
-            }
-
-            // Convert the byte array to an integer
-            int randomInt = BitConverter.ToInt32(randomNumber, 0);
-
-            // Generate a positive random number within a specific range
-            int finalNumber = Math.Abs(randomInt % maxNumber) + 1;
-
-            return finalNumber;
         }
 
         private void SeatClick(object sender, RoutedEventArgs e)

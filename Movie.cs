@@ -13,7 +13,7 @@ namespace Cinemania
     {
         public string Name { get; set; }
         public DateTime Date { get; set; }
-        public bool reserved { get; set; } = false;
+        public bool Reserved { get; set; } = false;
 
         public ObservableCollection<Seat> seats;
 
@@ -46,32 +46,26 @@ namespace Cinemania
             // Create new random seats
             if (seats == null)
             {
-                CreateEmptySeats();
+                CreateRandomSeats();
             }
 
             // Render Seats
-            for (int row = 0; row < Store.rows; row++)
+            foreach (Seat seat in seats)
             {
-                for (int column = 0; column < Store.columns; column++)
-                {
-                    // Get seat from array
-                    Seat seat = seats[column * Store.rows + row];
+                // Set new size
+                seat.SetSize(rectangleSize);
 
-                    // Set seats size
-                    seat.SetSize(rectangleSize);
+                // Set coordinates of a seat
+                Canvas.SetLeft(seat.rectangle, seat.Column * rectangleSize + seatsLeftOffset);
+                Canvas.SetTop(seat.rectangle, seat.Row * rectangleSize);
 
-                    // Set coordinates of a seat
-                    Canvas.SetLeft(seat.rectangle, column * rectangleSize + seatsLeftOffset);
-                    Canvas.SetTop(seat.rectangle, row * rectangleSize);
-
-                    // Add seat to seat canvas
-                    Store.seatsDisplay.Children.Add(seat.rectangle);
-                }
+                // Add seat to seat canvas
+                Store.seatsDisplay.Children.Add(seat.rectangle);
             }
 
         }
 
-        private void CreateEmptySeats()
+        private void CreateRandomSeats()
         {
             seats = new ObservableCollection<Seat> { };
 
@@ -79,7 +73,27 @@ namespace Cinemania
             {
                 for (int column = 0; column < Store.columns; column++)
                 {
-                    seats.Add(new Seat(row, column));
+                    // Generate a random Number
+                    var num = Store.GenerateRandomNumber(100);
+
+                    // Randomize taken seats
+                    bool taken = (num > 75) || false;
+
+                    seats.Add(new Seat(row, column, taken));
+                }
+            }
+
+        }
+
+        private void RecreateSeats()
+        {
+            seats = new ObservableCollection<Seat> { };
+
+            for (int row = 0; row < Store.rows; row++)
+            {
+                for (int column = 0; column < Store.columns; column++)
+                {
+                    seats.Add(new Seat(row, column, false));
                 }
             }
 
