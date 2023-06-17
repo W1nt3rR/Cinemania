@@ -6,12 +6,8 @@
         xmlns:local="clr-namespace:Cinemania"
         mc:Ignorable="d"
         Title="Cinemania"
-        Height="800"
-        Width="860"
-        MinHeight="800"
-        MinWidth="860"
-        MaxHeight="800"
-        MaxWidth="860"
+        Height="768"
+        Width="1024"
     >
     <Grid>
 

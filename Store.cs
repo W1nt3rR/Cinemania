@@ -9,21 +9,23 @@ namespace Cinemania
 {
     public static class Store
     {
+        // Store for public variables and functions accesible everywhere
+
         public static int rows = 5;
         public static int columns = 10;
         public static int marginSize = 4;
         public static Canvas seatsDisplay;
-        public static Border selectedItem;
+        public static Border selectedMovieItem;
 
-        public static bool GetMovieReserved()
+        public static bool GetSelectedMovieReservedStatus()
         {
-            Movie selectedMovie = (Movie)selectedItem.DataContext;
+            Movie selectedMovie = (Movie)selectedMovieItem.DataContext;
             return selectedMovie.reserved;
         }
 
-        public static void SetMovieReserved(bool newValue)
+        public static void SetSelectedMovieReservedStatus(bool newValue)
         {
-            Movie selectedMovie = (Movie)selectedItem.DataContext;
+            Movie selectedMovie = (Movie)selectedMovieItem.DataContext;
             selectedMovie.reserved = newValue;
         }
 

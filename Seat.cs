@@ -17,46 +17,41 @@ namespace Cinemania
         private bool reserved = false;
         private bool taken;
 
-        public Seat(double rectangleSize, double marginSize, bool taken = false) {
+        public Seat(bool taken = false)
+        {
+            // Generate a random Number
+            var num = GenerateRandomNumber(100);
 
-            Brush customColor;
-
-            var num = GenerateRandomNumber();
-
-            if (num > 60 )
-            {
+            // Randomize taken seats
+            if (num > 75)
                 taken = true;
-            }
 
             this.taken = taken;
 
-            if (taken)
-                customColor = new SolidColorBrush(Colors.Red);
-            else
-                customColor = new SolidColorBrush(Colors.Green);
+            // Set color based on if it the seat is taken
+            Brush customColor = taken ? new SolidColorBrush(Colors.Red) : new SolidColorBrush(Colors.Green);
 
-            double size = rectangleSize - marginSize * 2;
-
-            int columns = Store.columns;
-
+            // Create a rectangle representing a seat
             this.rectangle = new Rectangle
             {
-                Height = size,
-                Width = size,
+                Height = 0,
+                Width = 0,
                 Fill = customColor,
                 Stroke = new SolidColorBrush(Colors.Black),
-                Margin = new Thickness(marginSize),
+                Margin = new Thickness(Store.marginSize),
 
             };
 
+            // Setup event listeners
+            // Click register
             this.rectangle.MouseLeftButtonUp += SeatClick;
-
+            // Hover emulation
             this.rectangle.MouseLeave += SeatLeave;
             this.rectangle.MouseEnter += SeatEnter;
 
         }
 
-        private int GenerateRandomNumber()
+        private int GenerateRandomNumber(int maxNumber)
         {
             // Create a byte array to store the random number
             byte[] randomNumber = new byte[4];
@@ -72,32 +67,34 @@ namespace Cinemania
             int randomInt = BitConverter.ToInt32(randomNumber, 0);
 
             // Generate a positive random number within a specific range
-            int finalNumber = Math.Abs(randomInt % 100) + 1;
+            int finalNumber = Math.Abs(randomInt % maxNumber) + 1;
 
             return finalNumber;
         }
 
         private void SeatClick(object sender, RoutedEventArgs e)
         {
+            // Prevent reservation of already taken seats
             if (taken)
             {
                 MessageBox.Show("Seat already taken by someone else", "Seat taken", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
-            Rectangle clickedRectangle = sender as Rectangle;
+            Rectangle clickedRectangle = (Rectangle)sender;
 
-            bool movieReserved = Store.GetMovieReserved();
+            bool movieReserved = Store.GetSelectedMovieReservedStatus();
 
+            // Allow only one reservation for User
             if (movieReserved && reserved)
             {
-                Store.SetMovieReserved(false);
+                Store.SetSelectedMovieReservedStatus(false);
                 this.reserved = false;
                 clickedRectangle.Fill = new SolidColorBrush(Colors.Green);
             }
             else if (!movieReserved && !reserved)
             {
-                Store.SetMovieReserved(true);
+                Store.SetSelectedMovieReservedStatus(true);
                 this.reserved = true;
                 clickedRectangle.Fill = new SolidColorBrush(Colors.Purple);
             } 
@@ -111,6 +108,7 @@ namespace Cinemania
 
         private void SeatEnter(object sender, RoutedEventArgs e)
         {
+            // Create hover effect
             Rectangle clickedRectangle = sender as Rectangle;
             clickedRectangle.StrokeThickness = 3;
             clickedRectangle.Stroke = new SolidColorBrush(Colors.Magenta);
@@ -118,12 +116,14 @@ namespace Cinemania
 
         private void SeatLeave(object sender, RoutedEventArgs e)
         {
+            // Remove hover effect
             Rectangle clickedRectangle = sender as Rectangle;
             clickedRectangle.StrokeThickness = 1;
         }
 
         public void SetSize(double rectangleSize)
         {
+            // Set seat size
             rectangle.Width = rectangleSize - Store.marginSize * 2;
             rectangle.Height = rectangleSize - Store.marginSize * 2;
         }

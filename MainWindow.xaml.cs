@@ -21,7 +21,6 @@ namespace Cinemania
     /// </summary>
     public partial class MainWindow : Window
     {
-        public ObservableCollection<Seat> allSeats;
         public ObservableCollection<Movie> allMovies;
         public ObservableCollection<Movie> filteredMovies;
 
@@ -31,6 +30,7 @@ namespace Cinemania
 
             Store.seatsDisplay = SeatsDisplay;
 
+            // Load movies
             allMovies = new ObservableCollection<Movie>
             {
                 new Movie("John Wick Chapter 1", new DateTime(2023, 6, 17, 18, 00, 0)),
@@ -40,12 +40,13 @@ namespace Cinemania
                 new Movie("John Wick Chapter 4", new DateTime(2023, 6, 17, 22, 30, 0)),
                 new Movie("Rambo 1", new DateTime(2023, 6, 17, 18, 00, 0)),
                 new Movie("Rambo 2", new DateTime(2023, 6, 17, 19, 30, 0)),
-                new Movie("Rambo 3", new DateTime(2023, 6, 17, 21, 00, 0)),
-                new Movie("Rambo 4", new DateTime(2023, 6, 17, 22, 30, 0)),
+                new Movie("Rambo 3", new DateTime(2023, 6, 16, 21, 00, 0)),
+                new Movie("Rambo 4", new DateTime(2023, 6, 18, 22, 30, 0)),
             };
 
             PickedDate.SelectedDateChanged += HandleDateChanged;
 
+            // Copy all movies into filteredMovies
             filteredMovies = new ObservableCollection<Movie>(allMovies);
 
             Movies.ItemsSource = filteredMovies;
@@ -54,6 +55,7 @@ namespace Cinemania
 
         private void HandleDateChanged(object sender, RoutedEventArgs e)
         {
+            // Return full list if date is not set
             if (PickedDate.SelectedDate == null)
             {
                 filteredMovies = new ObservableCollection<Movie>(allMovies);
@@ -61,18 +63,15 @@ namespace Cinemania
                 return;
             }
 
+            // Get selected date
             DateTime date = (DateTime)PickedDate.SelectedDate;
 
+            // Clear the current filtered list of Movies
             filteredMovies.Clear();
 
-            foreach (var movie in allMovies)
+            // Filter movies by date
+            foreach (Movie movie in allMovies)
             {
-                if (DateTime.MinValue == date)
-                {
-                    filteredMovies.Add(movie);
-                    return;
-                }
-
                 if (movie.Date.Date == date.Date)
                 {
                     filteredMovies.Add(movie);
@@ -83,69 +82,59 @@ namespace Cinemania
 
         private void HandleMovieClick(object sender, RoutedEventArgs e)
         {
-            Border border = (Border)sender;
+            Border moveItemBorder = (Border)sender;
 
-            if (Store.selectedItem != null)
+            // Return previously selected item back to normal, if set.
+            if (Store.selectedMovieItem != null)
             {
-                Store.selectedItem.BorderBrush = new SolidColorBrush(Colors.Black);
-                Store.selectedItem.BorderThickness = new Thickness(2);
+                Store.selectedMovieItem.BorderBrush = new SolidColorBrush(Colors.Black);
+                Store.selectedMovieItem.BorderThickness = new Thickness(2);
             }
 
-            Store.selectedItem = border;
-            border.BorderBrush = new SolidColorBrush(Colors.Magenta);
-            border.BorderThickness = new Thickness(3);
+            // Make movie item look selected
+            Store.selectedMovieItem = moveItemBorder;
+            moveItemBorder.BorderBrush = new SolidColorBrush(Colors.Magenta);
+            moveItemBorder.BorderThickness = new Thickness(3);
 
-
-            Movie selectedMovie = (Movie)Store.selectedItem.DataContext;
+            // Render seats of a selected movie
+            Movie selectedMovie = (Movie)Store.selectedMovieItem.DataContext;
             selectedMovie.RenderSeats();
         }
 
         private void ItemMouseEnter(object sender, RoutedEventArgs e)
         {
-            Border border = (Border)sender;
+            Border moveItemBorder = (Border)sender;
 
-            if (Store.selectedItem == border)
-            {
+            // Skip selected Item
+            if (Store.selectedMovieItem == moveItemBorder)
                 return;
-            }
 
-            border.BorderBrush = new SolidColorBrush(Colors.Red);
+            // Emulate Hover Effect
+            moveItemBorder.BorderBrush = new SolidColorBrush(Colors.Red);
         }
 
         private void ItemMouseLeave(object sender, RoutedEventArgs e)
         {
-            Border border = (Border)sender;
+            Border moveItemBorder = (Border)sender;
 
-            if (Store.selectedItem == border)
-            {
+            // Skip selected Item
+            if (Store.selectedMovieItem == moveItemBorder)
                 return;
-            }
 
-            border.BorderBrush = new SolidColorBrush(Colors.Black);
+            // Emulate Hover Effect
+            moveItemBorder.BorderBrush = new SolidColorBrush(Colors.Black);
         }
-
-        private void SelectChanged(object sender, RoutedEventArgs e)
-        {
-            ComboBox select = sender as ComboBox;
-            Movie selectedMovie = select.SelectedItem as Movie;
-            MessageBox.Show(selectedMovie.Name);
-        }
-
-        //protected override void OnContentRendered(EventArgs e)
-        //{
-        //    base.OnContentRendered(e);
-        //    RenderSquares();
-        //}
 
         protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
         {
             base.OnRenderSizeChanged(sizeInfo);
-            if (Store.selectedItem == null)
-            {
-                return;
-            }
 
-            Movie selectedMovie = (Movie)Store.selectedItem.DataContext;
+            // Do not re-render if nothing to re-render
+            if (Store.selectedMovieItem == null)
+                return;
+
+            // Re-render seats to new size
+            Movie selectedMovie = (Movie)Store.selectedMovieItem.DataContext;
             selectedMovie.RenderSeats();
         }
 
