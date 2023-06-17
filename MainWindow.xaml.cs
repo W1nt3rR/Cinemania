@@ -46,9 +46,6 @@ namespace Cinemania
 
             PickedDate.SelectedDateChanged += HandleDateChanged;
 
-            MovieSelect.ItemsSource = allMovies;
-            MovieSelect.SelectionChanged += SelectChanged;
-
             filteredMovies = new ObservableCollection<Movie>(allMovies);
 
             Movies.ItemsSource = filteredMovies;
