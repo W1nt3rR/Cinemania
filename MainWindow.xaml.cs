@@ -34,17 +34,15 @@ namespace Cinemania
 
             allMovies = new ObservableCollection<Movie>
             {
-                new Movie("Redo of the healer gfdsfds ds f fd dfs fsd dfsdfs", new DateTime(2023, 6, 11, 20, 30, 0)),
-                new Movie("Redo of the healer 2", new DateTime(2023, 6, 11, 19, 30, 0)),
-                new Movie("Redo of the healer 3", new DateTime(2023, 6, 12, 18, 0, 0)),
-                new Movie("Redo of the healer 3", new DateTime(2023, 6, 12, 18, 0, 0)),
-                new Movie("Redo of the healer 3", new DateTime(2023, 6, 12, 18, 0, 0)),
-                new Movie("Redo of the healer 3", new DateTime(2023, 6, 12, 18, 0, 0)),
-                new Movie("Redo of the healer 3", new DateTime(2023, 6, 12, 18, 0, 0)),
-
-
-
-                new Movie("Redo of the healer 3", new DateTime(2023, 6, 12, 18, 0, 0)),
+                new Movie("John Wick Chapter 1", new DateTime(2023, 6, 17, 18, 00, 0)),
+                new Movie("John Wick Chapter 1", new DateTime(2023, 6, 17, 19, 30, 0)),
+                new Movie("John Wick Chapter 2", new DateTime(2023, 6, 17, 19, 30, 0)),
+                new Movie("John Wick Chapter 3", new DateTime(2023, 6, 17, 21, 0, 0)),
+                new Movie("John Wick Chapter 4", new DateTime(2023, 6, 17, 22, 30, 0)),
+                new Movie("Rambo 1", new DateTime(2023, 6, 17, 18, 00, 0)),
+                new Movie("Rambo 2", new DateTime(2023, 6, 17, 19, 30, 0)),
+                new Movie("Rambo 3", new DateTime(2023, 6, 17, 21, 00, 0)),
+                new Movie("Rambo 4", new DateTime(2023, 6, 17, 22, 30, 0)),
             };
 
             PickedDate.SelectedDateChanged += HandleDateChanged;
