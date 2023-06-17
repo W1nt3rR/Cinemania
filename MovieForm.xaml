@@ -1,0 +1,38 @@
+﻿<Window x:Class="Cinemania.MovieForm"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Cinemania"
+        mc:Ignorable="d"
+        Title="MovieForm" Height="300" Width="400">
+    <Grid>
+        <TextBox
+            HorizontalAlignment="Center"
+            Margin="0,83,0,0"
+            TextWrapping="Wrap"
+            VerticalAlignment="Top"
+            Width="250"
+            Height="27"
+            x:Name="MovieName"
+        />
+        <DatePicker
+            HorizontalAlignment="Center"
+            Margin="0,150,0,0"
+            VerticalAlignment="Top"
+            x:Name="Date"
+        />
+        <Label Content="Movie Name" HorizontalAlignment="Center" Margin="0,52,0,0" VerticalAlignment="Top" Width="250"/>
+        <Label Content="Select Date" HorizontalAlignment="Center" Margin="0,119,0,0" VerticalAlignment="Top" Width="102"/>
+        
+        <Button
+            Content="Add"
+            HorizontalAlignment="Center"
+            Margin="0,227,0,0"
+            VerticalAlignment="Top"
+            Width="64"
+            Click="Close"
+        />
+
+    </Grid>
+</Window>

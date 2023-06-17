@@ -47,13 +47,56 @@ namespace Cinemania
 
         }
 
+        private void OpenMovieForm(object sender, RoutedEventArgs e)
+        {
+            // Create and Show Dialog Form
+            MovieForm movieForm = new MovieForm();
+            movieForm.ShowDialog();
+
+            // Get movie Data
+            string name = movieForm.MovieName.Text;
+
+            // Validation
+            if (name == "")
+                return;
+
+            // Return if no date provided
+            DateTime date;
+            try
+            {
+                date = (DateTime)movieForm.Date.SelectedDate;
+            }
+            catch (Exception)
+            {
+                return;
+            }
+
+            // Create movie based on given Data
+            Movie movie = new Movie(0, name, date);
+
+            // Store movie to databse to get ID
+            movie.StoreToDatabase();
+
+            // Get all movies including new movie
+            Store.GetMoviesFromDatabase();
+
+            // Update filteredMovies list to show new movie
+            UpdateFilteredMovies();
+        }
+
+        private void UpdateFilteredMovies()
+        {
+            // Updates filtered list
+            filteredMovies = new ObservableCollection<Movie>(Store.allMovies);
+            Movies.ItemsSource = filteredMovies;
+        }
+
         private void HandleDateChanged(object sender, RoutedEventArgs e)
         {
             // Return full list if date is not set
             if (PickedDate.SelectedDate == null)
             {
-                filteredMovies = new ObservableCollection<Movie>(Store.allMovies);
-                Movies.ItemsSource = filteredMovies;
+                UpdateFilteredMovies();
                 return;
             }
 

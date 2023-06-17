@@ -221,6 +221,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Movie.cs" />
+    <Compile Include="MovieForm.xaml.cs">
+      <DependentUpon>MovieForm.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Seat.cs" />
     <Compile Include="Store.cs" />
     <Page Include="MainWindow.xaml">
@@ -235,6 +238,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="MovieForm.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">

@@ -25,12 +25,13 @@ namespace Cinemania
             this.ID = id;
             this.Name = name;
             this.Date = date;
-            this.seats = new ObservableCollection<Seat>(seats);
             this.Reserved = reserved;
 
             // Create new random seats
-            if (this.seats == null)
+            if (seats == null)
                 CreateRandomSeats();
+            else
+                this.seats = new ObservableCollection<Seat>(seats);
         }
 
         public void StoreToDatabase()
