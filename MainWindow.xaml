@@ -5,11 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Cinemania"
         mc:Ignorable="d"
-        Title="MainWindow"
-        Height="640"
+        Title="Cinemania"
+        Height="800"
         Width="860"
-        MinHeight="640"
+        MinHeight="800"
         MinWidth="860"
+        MaxHeight="800"
+        MaxWidth="860"
     >
     <Grid>
 
@@ -55,10 +57,20 @@
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Border MouseLeftButtonUp="HandleMovieClick" BorderBrush="Black" BorderThickness="2" Margin="4" Padding="4" Width="128">
+                        <Border 
+                            MouseLeftButtonUp="HandleMovieClick"
+                            MouseEnter="ItemMouseEnter"
+                            MouseLeave="ItemMouseLeave"
+                            BorderBrush="Black"
+                            BorderThickness="2"
+                            Margin="4"
+                            Padding="4"
+                            Width="128"
+                            Background="LightGray"
+                        >
                             <StackPanel>
                                 <TextBlock Text="{Binding Name}" Width="auto" FontWeight="Bold" Margin="0,12,0,12" TextAlignment="Center" />
-                                <Border BorderThickness="1" BorderBrush="Black" CornerRadius="5">
+                                <Border Background="Gray" BorderThickness="1" BorderBrush="Black" CornerRadius="5">
                                     <TextBlock Text="{Binding Description}" MinHeight="80" />
                                 </Border>
                                 <TextBlock Text="{Binding Date, StringFormat={}{0:dd.MM.yyyy}}" FontStyle="Italic" FontSize="12" Margin="10,0,10,0" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center"/>
@@ -69,6 +81,7 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
         </ScrollViewer>
+        <Label Content="Made by Ramiz" HorizontalAlignment="Center" Grid.Row="3" VerticalAlignment="Center"/>
 
     </Grid>
 </Window>
