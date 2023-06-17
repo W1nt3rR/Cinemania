@@ -23,26 +23,6 @@
             <RowDefinition Height="64"/>
         </Grid.RowDefinitions>
 
-        <Button 
-            Content="dugme"
-            Grid.Column="2"
-            Margin="0,16,16,16"
-            HorizontalAlignment="Right"
-            Width="64"
-            BorderBrush="{x:Null}"
-            BorderThickness="0,0,0,0"
-            Name="button1"
-        >
-            <Button.Resources>
-                <Style TargetType="{x:Type Border}">
-                    <Setter
-                        Property="CornerRadius"
-                        Value="7"
-                    />
-                </Style>
-            </Button.Resources>
-        </Button>
-
         <Button
             Content="Button"
             HorizontalAlignment="Left"
@@ -58,16 +38,6 @@
             Grid.Row="2"
             Margin="16"
             x:Name="SeatsDisplay"
-        />
-
-        <ComboBox
-            x:Name="MovieSelect"
-            HorizontalAlignment="Left"
-            Margin="196,20,0,20"
-            VerticalAlignment="Center"
-            Width="120"
-            ItemsSource="{Binding allMovies}"
-            DisplayMemberPath="Name"
         />
 
         <DatePicker
