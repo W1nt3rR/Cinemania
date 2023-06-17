@@ -12,24 +12,26 @@ namespace Cinemania
 {
     public class Seat
     {
-
+        // Rectnagle representing a seat
         public Rectangle rectangle;
-        private bool reserved = false;
-        private bool taken;
+        public bool Reserved { get; set; } = false;
+        public bool Taken { get; set; }
+        public int Row { get; set; }
+        public int Column { get; set; }
 
-        public Seat(bool taken = false)
+        public Seat(int row, int column, bool taken = false)
         {
+            this.Row = row;
+            this.Column = column;
+
             // Generate a random Number
             var num = GenerateRandomNumber(100);
 
             // Randomize taken seats
-            if (num > 75)
-                taken = true;
-
-            this.taken = taken;
+            this.Taken = (num > 75) || false;
 
             // Set color based on if it the seat is taken
-            Brush customColor = taken ? new SolidColorBrush(Colors.Red) : new SolidColorBrush(Colors.Green);
+            Brush customColor = this.Taken ? new SolidColorBrush(Colors.Red) : new SolidColorBrush(Colors.Green);
 
             // Create a rectangle representing a seat
             this.rectangle = new Rectangle
@@ -75,7 +77,7 @@ namespace Cinemania
         private void SeatClick(object sender, RoutedEventArgs e)
         {
             // Prevent reservation of already taken seats
-            if (taken)
+            if (Taken)
             {
                 MessageBox.Show("Seat already taken by someone else", "Seat taken", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
@@ -86,16 +88,16 @@ namespace Cinemania
             bool movieReserved = Store.GetSelectedMovieReservedStatus();
 
             // Allow only one reservation for User
-            if (movieReserved && reserved)
+            if (movieReserved && Reserved)
             {
                 Store.SetSelectedMovieReservedStatus(false);
-                this.reserved = false;
+                this.Reserved = false;
                 clickedRectangle.Fill = new SolidColorBrush(Colors.Green);
             }
-            else if (!movieReserved && !reserved)
+            else if (!movieReserved && !Reserved)
             {
                 Store.SetSelectedMovieReservedStatus(true);
-                this.reserved = true;
+                this.Reserved = true;
                 clickedRectangle.Fill = new SolidColorBrush(Colors.Purple);
             } 
             else

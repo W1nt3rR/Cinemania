@@ -50,19 +50,19 @@ namespace Cinemania
             }
 
             // Render Seats
-            for (int i = 0; i < Store.rows; i++)
+            for (int row = 0; row < Store.rows; row++)
             {
-                for (int j = 0; j < Store.columns; j++)
+                for (int column = 0; column < Store.columns; column++)
                 {
                     // Get seat from array
-                    Seat seat = seats[j * Store.rows + i];
+                    Seat seat = seats[column * Store.rows + row];
 
                     // Set seats size
                     seat.SetSize(rectangleSize);
 
                     // Set coordinates of a seat
-                    Canvas.SetLeft(seat.rectangle, j * rectangleSize + seatsLeftOffset);
-                    Canvas.SetTop(seat.rectangle, i * rectangleSize);
+                    Canvas.SetLeft(seat.rectangle, column * rectangleSize + seatsLeftOffset);
+                    Canvas.SetTop(seat.rectangle, row * rectangleSize);
 
                     // Add seat to seat canvas
                     Store.seatsDisplay.Children.Add(seat.rectangle);
@@ -75,14 +75,12 @@ namespace Cinemania
         {
             seats = new ObservableCollection<Seat> { };
 
-            for (int i = 0; i < Store.rows; i++)
+            for (int row = 0; row < Store.rows; row++)
             {
-                for (int j = 0; j < Store.columns; j++)
+                for (int column = 0; column < Store.columns; column++)
                 {
-                    Seat seat = new Seat();
-                    seats.Add(seat);
+                    seats.Add(new Seat(row, column));
                 }
-
             }
 
         }
