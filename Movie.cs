@@ -14,6 +14,7 @@ namespace Cinemania
 
         public string Name { get; set; }
         public DateTime Date { get; set; }
+        public bool reserved = false;
 
         public ObservableCollection<Seat> seats;
 

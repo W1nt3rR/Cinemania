@@ -14,5 +14,19 @@ namespace Cinemania
         public static int marginSize = 4;
         public static Canvas seatsDisplay;
         public static Border selectedItem;
+
+        public static bool GetMovieReserved()
+        {
+            Movie selectedMovie = (Movie)Store.selectedItem.DataContext;
+            return selectedMovie.reserved;
+        }
+
+        public static void SetMovieReserved(bool newValue)
+        {
+            Movie selectedMovie = (Movie)Store.selectedItem.DataContext;
+            selectedMovie.reserved = newValue;
+        }
+
     }
+
 }
