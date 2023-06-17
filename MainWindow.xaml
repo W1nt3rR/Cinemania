@@ -56,7 +56,7 @@
 
         <Canvas 
             Grid.Row="2"
-            Margin="64"
+            Margin="16"
             x:Name="SeatsDisplay"
         />
 
