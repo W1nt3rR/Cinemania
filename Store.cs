@@ -17,13 +17,13 @@ namespace Cinemania
 
         public static bool GetMovieReserved()
         {
-            Movie selectedMovie = (Movie)Store.selectedItem.DataContext;
+            Movie selectedMovie = (Movie)selectedItem.DataContext;
             return selectedMovie.reserved;
         }
 
         public static void SetMovieReserved(bool newValue)
         {
-            Movie selectedMovie = (Movie)Store.selectedItem.DataContext;
+            Movie selectedMovie = (Movie)selectedItem.DataContext;
             selectedMovie.reserved = newValue;
         }
 
