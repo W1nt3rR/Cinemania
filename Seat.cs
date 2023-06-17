@@ -78,18 +78,30 @@ namespace Cinemania
         {
             if (taken)
             {
+                MessageBox.Show("Seat already taken by someone else", "Seat taken", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
-            if (reserved)
+            bool movieReserved = Store.GetMovieReserved();
+
+            if (movieReserved && reserved)
             {
+                Store.SetMovieReserved(false);
                 this.reserved = false;
                 Rectangle clickedRectangle = sender as Rectangle;
                 clickedRectangle.Fill = new SolidColorBrush(Colors.Green);
-            } else {
+            }
+            else if (!movieReserved && !reserved)
+            {
+                Store.SetMovieReserved(true);
                 this.reserved = true;
                 Rectangle clickedRectangle = sender as Rectangle;
                 clickedRectangle.Fill = new SolidColorBrush(Colors.Purple);
+            } 
+            else
+            {
+                MessageBox.Show("You can only Reserve one seat.", "Seat already reserved", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
             }
 
         }
