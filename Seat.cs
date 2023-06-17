@@ -51,6 +51,9 @@ namespace Cinemania
 
             this.rectangle.MouseLeftButtonUp += SeatClick;
 
+            this.rectangle.MouseLeave += SeatLeave;
+            this.rectangle.MouseEnter += SeatEnter;
+
         }
 
         private int GenerateRandomNumber()
@@ -82,20 +85,20 @@ namespace Cinemania
                 return;
             }
 
+            Rectangle clickedRectangle = sender as Rectangle;
+
             bool movieReserved = Store.GetMovieReserved();
 
             if (movieReserved && reserved)
             {
                 Store.SetMovieReserved(false);
                 this.reserved = false;
-                Rectangle clickedRectangle = sender as Rectangle;
                 clickedRectangle.Fill = new SolidColorBrush(Colors.Green);
             }
             else if (!movieReserved && !reserved)
             {
                 Store.SetMovieReserved(true);
                 this.reserved = true;
-                Rectangle clickedRectangle = sender as Rectangle;
                 clickedRectangle.Fill = new SolidColorBrush(Colors.Purple);
             } 
             else
@@ -104,6 +107,19 @@ namespace Cinemania
                 return;
             }
 
+        }
+
+        private void SeatEnter(object sender, RoutedEventArgs e)
+        {
+            Rectangle clickedRectangle = sender as Rectangle;
+            clickedRectangle.StrokeThickness = 3;
+            clickedRectangle.Stroke = new SolidColorBrush(Colors.Magenta);
+        }
+
+        private void SeatLeave(object sender, RoutedEventArgs e)
+        {
+            Rectangle clickedRectangle = sender as Rectangle;
+            clickedRectangle.StrokeThickness = 1;
         }
 
         public void SetSize(double rectangleSize)

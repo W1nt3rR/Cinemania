@@ -100,6 +100,30 @@ namespace Cinemania
             selectedMovie.RenderSeats();
         }
 
+        private void ItemMouseEnter(object sender, RoutedEventArgs e)
+        {
+            Border border = (Border)sender;
+
+            if (Store.selectedItem == border)
+            {
+                return;
+            }
+
+            border.BorderBrush = new SolidColorBrush(Colors.Red);
+        }
+
+        private void ItemMouseLeave(object sender, RoutedEventArgs e)
+        {
+            Border border = (Border)sender;
+
+            if (Store.selectedItem == border)
+            {
+                return;
+            }
+
+            border.BorderBrush = new SolidColorBrush(Colors.Black);
+        }
+
         private void SelectChanged(object sender, RoutedEventArgs e)
         {
             ComboBox select = sender as ComboBox;
