@@ -27,7 +27,7 @@ namespace Cinemania
             this.Reserved = reserved;
 
             // Set color based on if it the seat is taken
-            Brush customColor = this.Taken ? new SolidColorBrush(Colors.Red) : new SolidColorBrush(Colors.Green);
+            Brush customColor = this.Reserved ? new SolidColorBrush(Colors.Purple) : this.Taken ? new SolidColorBrush(Colors.Red) : new SolidColorBrush(Colors.Green);
 
             // Create a rectangle representing a seat
             this.rectangle = new Rectangle
@@ -68,12 +68,14 @@ namespace Cinemania
                 Store.SetSelectedMovieReservedStatus(false);
                 this.Reserved = false;
                 clickedRectangle.Fill = new SolidColorBrush(Colors.Green);
+                Store.UpdateSelectedMovieInDatabase();
             }
             else if (!movieReserved && !Reserved)
             {
                 Store.SetSelectedMovieReservedStatus(true);
                 this.Reserved = true;
                 clickedRectangle.Fill = new SolidColorBrush(Colors.Purple);
+                Store.UpdateSelectedMovieInDatabase();
             } 
             else
             {

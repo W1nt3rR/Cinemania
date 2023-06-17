@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using MySql.Data.MySqlClient;
 
 namespace Cinemania
 {
@@ -21,35 +22,28 @@ namespace Cinemania
     /// </summary>
     public partial class MainWindow : Window
     {
-        public ObservableCollection<Movie> allMovies;
         public ObservableCollection<Movie> filteredMovies;
 
         public MainWindow()
         {
             InitializeComponent();
-
+            
             Store.seatsDisplay = SeatsDisplay;
 
-            // Load movies
-            allMovies = new ObservableCollection<Movie>
-            {
-                new Movie("John Wick Chapter 1", new DateTime(2023, 6, 17, 18, 00, 0)),
-                new Movie("John Wick Chapter 1", new DateTime(2023, 6, 17, 19, 30, 0)),
-                new Movie("John Wick Chapter 2", new DateTime(2023, 6, 17, 19, 30, 0)),
-                new Movie("John Wick Chapter 3", new DateTime(2023, 6, 17, 21, 0, 0)),
-                new Movie("John Wick Chapter 4", new DateTime(2023, 6, 17, 22, 30, 0)),
-                new Movie("Rambo 1", new DateTime(2023, 6, 17, 18, 00, 0)),
-                new Movie("Rambo 2", new DateTime(2023, 6, 17, 19, 30, 0)),
-                new Movie("Rambo 3", new DateTime(2023, 6, 16, 21, 00, 0)),
-                new Movie("Rambo 4", new DateTime(2023, 6, 18, 22, 30, 0)),
-            };
+            // Initialize Database
+            Store.connection = new MySqlConnection(Store.connectionString);
 
-            PickedDate.SelectedDateChanged += HandleDateChanged;
+            // Load movies from Database
+            Store.GetMoviesFromDatabase();
 
             // Copy all movies into filteredMovies
-            filteredMovies = new ObservableCollection<Movie>(allMovies);
+            filteredMovies = new ObservableCollection<Movie>(Store.allMovies);
 
+            // Add filteredMovies to Movies items
             Movies.ItemsSource = filteredMovies;
+
+            // Setup Event Handlers
+            PickedDate.SelectedDateChanged += HandleDateChanged;
 
         }
 
@@ -58,7 +52,7 @@ namespace Cinemania
             // Return full list if date is not set
             if (PickedDate.SelectedDate == null)
             {
-                filteredMovies = new ObservableCollection<Movie>(allMovies);
+                filteredMovies = new ObservableCollection<Movie>(Store.allMovies);
                 Movies.ItemsSource = filteredMovies;
                 return;
             }
@@ -70,7 +64,7 @@ namespace Cinemania
             filteredMovies.Clear();
 
             // Filter movies by date
-            foreach (Movie movie in allMovies)
+            foreach (Movie movie in Store.allMovies)
             {
                 if (movie.Date.Date == date.Date)
                 {
