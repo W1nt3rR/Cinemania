@@ -5,36 +5,23 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Cinemania"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow"
+        Height="640"
+        Width="860"
+        MinHeight="640"
+        MinWidth="860"
+    >
     <Grid>
-        
+
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="3*"/>
-            <ColumnDefinition Width="3*"/>
-            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="20*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="64"/>
+            <RowDefinition Height="196"/>
             <RowDefinition Height="309*"/>
-            <RowDefinition Height="69*"/>
+            <RowDefinition Height="64"/>
         </Grid.RowDefinitions>
-
-        <Border
-            Grid.Column="2"
-            Grid.RowSpan="2"
-            Background="LightGoldenrodYellow">
-        </Border>
-
-        <Label 
-            Grid.Column="2"
-            Content=""
-            Margin="16,0,0,0"
-            HorizontalAlignment="Left"
-            Width="166"
-            VerticalAlignment="Center"
-            VerticalContentAlignment="Center"
-            Name="label1"
-        />
 
         <Button 
             Content="dugme"
@@ -67,6 +54,53 @@
             Grid.Row="1"
             Width="0"
         />
-        
+
+        <Canvas 
+            Grid.Row="2"
+            Margin="64"
+            x:Name="SeatsDisplay"
+            MouseLeftButtonUp="HandleCanvasClick"
+        />
+
+        <ComboBox
+            x:Name="MovieSelect"
+            HorizontalAlignment="Left"
+            Margin="196,20,0,20"
+            VerticalAlignment="Center"
+            Width="120"
+            ItemsSource="{Binding allMovies}"
+            DisplayMemberPath="Name"
+        />
+
+        <DatePicker
+            x:Name="PickedDate"
+            Grid.Row="0"
+            Margin="20,20,0,20" HorizontalAlignment="Left" Width="160"
+        />
+
+        <ScrollViewer HorizontalScrollBarVisibility="Auto" Grid.Row="1">
+            <ItemsControl x:Name="Movies" Margin="16,0">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border MouseLeftButtonUp="HandleMovieClick" BorderBrush="Black" BorderThickness="2" Margin="4" Padding="4" Width="128">
+                            <StackPanel>
+                                <TextBlock Text="{Binding Name}" Width="auto" FontWeight="Bold" Margin="0,12,0,12" TextAlignment="Center" />
+                                <Border BorderThickness="1" BorderBrush="Black" CornerRadius="5">
+                                    <TextBlock Text="{Binding Description}" MinHeight="80" />
+                                </Border>
+                                <TextBlock Text="{Binding Date, StringFormat={}{0:dd.MM.yyyy}}" FontStyle="Italic" FontSize="12" Margin="10,0,10,0" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                <TextBlock Text="{Binding Date, StringFormat={}{0:HH.mm}}" FontStyle="Italic" FontSize="12" Margin="10,0,10,0" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+
     </Grid>
 </Window>
