@@ -24,7 +24,6 @@ namespace Cinemania
         public ObservableCollection<Seat> allSeats;
         public ObservableCollection<Movie> allMovies;
         public ObservableCollection<Movie> filteredMovies;
-        public Border selectedItem;
 
         public MainWindow()
         {
@@ -89,18 +88,18 @@ namespace Cinemania
         {
             Border border = (Border)sender;
 
-            if (this.selectedItem != null)
+            if (Store.selectedItem != null)
             {
-                this.selectedItem.BorderBrush = new SolidColorBrush(Colors.Black);
-                this.selectedItem.BorderThickness = new Thickness(2);
+                Store.selectedItem.BorderBrush = new SolidColorBrush(Colors.Black);
+                Store.selectedItem.BorderThickness = new Thickness(2);
             }
 
-            this.selectedItem = border;
+            Store.selectedItem = border;
             border.BorderBrush = new SolidColorBrush(Colors.Magenta);
             border.BorderThickness = new Thickness(3);
 
 
-            Movie selectedMovie = (Movie)this.selectedItem.DataContext;
+            Movie selectedMovie = (Movie)Store.selectedItem.DataContext;
             selectedMovie.RenderSeats();
         }
 
@@ -120,12 +119,12 @@ namespace Cinemania
         protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
         {
             base.OnRenderSizeChanged(sizeInfo);
-            if (selectedItem == null)
+            if (Store.selectedItem == null)
             {
                 return;
             }
 
-            Movie selectedMovie = (Movie)selectedItem.DataContext;
+            Movie selectedMovie = (Movie)Store.selectedItem.DataContext;
             selectedMovie.RenderSeats();
         }
 

@@ -13,5 +13,6 @@ namespace Cinemania
         public static int columns = 10;
         public static int marginSize = 4;
         public static Canvas seatsDisplay;
+        public static Border selectedItem;
     }
 }
