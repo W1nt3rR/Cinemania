@@ -33,8 +33,8 @@ namespace Cinemania
             // Initialize Database Connection
             Store.connection = new MySqlConnection(Store.connectionString);
 
-            // Initialize Database
-            Store.CreateDatabase();
+            // Initialize Tables
+            Store.CreateTable();
 
             // Load movies from Database
             Store.GetMoviesFromDatabase();

@@ -106,7 +106,7 @@ namespace Cinemania
 
         }
 
-        public static void CreateDatabase()
+        public static void CreateTable()
         {
             // Exported queries from Database
             string tableQuery = "CREATE TABLE IF NOT EXISTS `movies` (\r\n  `ID` int unsigned NOT NULL AUTO_INCREMENT,\r\n  `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'Movie Name',\r\n  `seats` json DEFAULT NULL,\r\n  `datetime` datetime DEFAULT NULL,\r\n  `user_reserved` tinyint DEFAULT NULL,\r\n  PRIMARY KEY (`ID`),\r\n  UNIQUE KEY `ID` (`ID`)\r\n)";
