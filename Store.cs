@@ -17,20 +17,26 @@ namespace Cinemania
     {
         // Store for public variables and functions accesible everywhere
 
+        // Seat Variables, do not change
         public static int rows = 6;
         public static int columns = 11;
         public static int marginSize = 4;
+
+        // XAML Elements
         public static Canvas seatsDisplay;
         public static Border selectedMovieItem;
 
-        // Database
-        private static string DB_Host = "localhost";
-        private static string DB_Name = "cinemania";
-        private static string DB_Username = "root";
-        private static string DB_Password = "";
-        public static string connectionString = "Server=localhost;Database=cinemania;Uid=root;Pwd='';";
+        // Database Config
+        private static readonly string DB_Host = "localhost";
+        private static readonly string DB_Name = "cinemania";
+        private static readonly string DB_Username = "root";
+        private static readonly string DB_Password = "";
+
+        // Database Connection
+        public static string connectionString = $"Server={DB_Host};Database={DB_Name};Uid={DB_Username};Pwd={DB_Password};";
         public static MySqlConnection connection;
 
+        // Collections
         public static ObservableCollection<Movie> allMovies;
 
 
@@ -98,6 +104,21 @@ namespace Cinemania
             }
             connection.Close();
 
+        }
+
+        public static void CreateDatabase()
+        {
+            // Exported queries from Database
+            string databaseQuery = $"CREATE DATABASE IF NOT EXISTS `{DB_Name}`";
+            string tableQuery = "CREATE TABLE IF NOT EXISTS `movies` (\r\n  `ID` int unsigned NOT NULL AUTO_INCREMENT,\r\n  `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'Movie Name',\r\n  `seats` json DEFAULT NULL,\r\n  `datetime` datetime DEFAULT NULL,\r\n  `user_reserved` tinyint DEFAULT NULL,\r\n  PRIMARY KEY (`ID`),\r\n  UNIQUE KEY `ID` (`ID`)\r\n)";
+
+            MySqlCommand createCommand = new MySqlCommand(databaseQuery, Store.connection);
+            MySqlCommand tableCommand = new MySqlCommand(tableQuery, Store.connection);
+
+            Store.connection.Open();
+            createCommand.ExecuteNonQuery();
+            tableCommand.ExecuteNonQuery();
+            Store.connection.Close();
         }
 
     }

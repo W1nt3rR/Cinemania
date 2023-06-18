@@ -30,8 +30,11 @@ namespace Cinemania
             
             Store.seatsDisplay = SeatsDisplay;
 
-            // Initialize Database
+            // Initialize Database Connection
             Store.connection = new MySqlConnection(Store.connectionString);
+
+            // Initialize Database
+            Store.CreateDatabase();
 
             // Load movies from Database
             Store.GetMoviesFromDatabase();
