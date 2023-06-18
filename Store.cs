@@ -28,13 +28,12 @@ namespace Cinemania
 
         // Database Config
         private static readonly string DB_Host = "localhost";
-        private static readonly string DB_Name = "cinemania5";
+        private static readonly string DB_Name = "cinemania";
         private static readonly string DB_Username = "root";
         private static readonly string DB_Password = "";
 
         // Database Connection
         public static string connectionString = $"Server={DB_Host};Database={DB_Name};Uid={DB_Username};Pwd={DB_Password};";
-        public static string connectionStringCreate = $"Server={DB_Host};Uid={DB_Username};Pwd={DB_Password};";
         public static MySqlConnection connection;
 
         // Collections
@@ -110,20 +109,13 @@ namespace Cinemania
         public static void CreateDatabase()
         {
             // Exported queries from Database
-            string databaseQuery = $"CREATE DATABASE IF NOT EXISTS `{DB_Name}`";
             string tableQuery = "CREATE TABLE IF NOT EXISTS `movies` (\r\n  `ID` int unsigned NOT NULL AUTO_INCREMENT,\r\n  `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'Movie Name',\r\n  `seats` json DEFAULT NULL,\r\n  `datetime` datetime DEFAULT NULL,\r\n  `user_reserved` tinyint DEFAULT NULL,\r\n  PRIMARY KEY (`ID`),\r\n  UNIQUE KEY `ID` (`ID`)\r\n)";
 
-            MySqlCommand createCommand = new MySqlCommand(databaseQuery, Store.connection);
-            MySqlCommand tableCommand = new MySqlCommand(tableQuery, Store.connection);
+            MySqlCommand tableCommand = new MySqlCommand(tableQuery, connection);
 
-            MySqlConnection createConnection = new MySqlConnection(Store.connectionStringCreate);
-            createConnection.Open();
-            createCommand.ExecuteNonQuery();
-            createConnection.Close();
-
-            Store.connection.Open();
+            connection.Open();
             tableCommand.ExecuteNonQuery();
-            Store.connection.Close();
+            connection.Close();
         }
 
     }
