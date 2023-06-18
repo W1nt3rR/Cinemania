@@ -28,12 +28,13 @@ namespace Cinemania
 
         // Database Config
         private static readonly string DB_Host = "localhost";
-        private static readonly string DB_Name = "cinemania";
+        private static readonly string DB_Name = "cinemania5";
         private static readonly string DB_Username = "root";
         private static readonly string DB_Password = "";
 
         // Database Connection
         public static string connectionString = $"Server={DB_Host};Database={DB_Name};Uid={DB_Username};Pwd={DB_Password};";
+        public static string connectionStringCreate = $"Server={DB_Host};Uid={DB_Username};Pwd={DB_Password};";
         public static MySqlConnection connection;
 
         // Collections
@@ -115,8 +116,12 @@ namespace Cinemania
             MySqlCommand createCommand = new MySqlCommand(databaseQuery, Store.connection);
             MySqlCommand tableCommand = new MySqlCommand(tableQuery, Store.connection);
 
-            Store.connection.Open();
+            MySqlConnection createConnection = new MySqlConnection(Store.connectionStringCreate);
+            createConnection.Open();
             createCommand.ExecuteNonQuery();
+            createConnection.Close();
+
+            Store.connection.Open();
             tableCommand.ExecuteNonQuery();
             Store.connection.Close();
         }
