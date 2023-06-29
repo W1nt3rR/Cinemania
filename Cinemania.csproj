@@ -220,12 +220,20 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="CancelTicketForm.xaml.cs">
+      <DependentUpon>CancelTicketForm.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Movie.cs" />
     <Compile Include="MovieForm.xaml.cs">
       <DependentUpon>MovieForm.xaml</DependentUpon>
     </Compile>
     <Compile Include="Seat.cs" />
     <Compile Include="Store.cs" />
+    <Compile Include="Ticket.cs" />
+    <Page Include="CancelTicketForm.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
