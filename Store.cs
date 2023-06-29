@@ -10,6 +10,8 @@ using MySql.Data.MySqlClient;
 using Syncfusion.Windows.Forms.Chart.SvgBase;
 using System.Text.Json;
 using System.Collections.ObjectModel;
+using System.Windows;
+using System.Data;
 
 namespace Cinemania
 {
@@ -25,6 +27,8 @@ namespace Cinemania
         // XAML Elements
         public static Canvas seatsDisplay;
         public static Border selectedMovieItem;
+        public static Seat selectedSeat;
+        public static ItemsControl Movies;
 
         // Database Config
         private static readonly string DB_Host = "localhost";
@@ -38,54 +42,92 @@ namespace Cinemania
 
         // Collections
         public static ObservableCollection<Movie> allMovies;
+        public static ObservableCollection<Movie> filteredMovies;
 
-
-        public static bool GetSelectedMovieReservedStatus()
+        public static void ReserveTicket()
         {
-            Movie selectedMovie = (Movie)selectedMovieItem.DataContext;
-            return selectedMovie.Reserved;
-        }
-
-        public static void SetSelectedMovieReservedStatus(bool newValue)
-        {
-            Movie selectedMovie = (Movie)selectedMovieItem.DataContext;
-            selectedMovie.Reserved = newValue;
-        }
-
-        public static void UpdateSelectedMovieInDatabase()
-        {
-            Movie selectedMovie = (Movie)selectedMovieItem.DataContext;
-            selectedMovie.UpdateInDatabase();
-        }
-
-        public static int GenerateRandomNumber(int maxNumber)
-        {
-            // Create a byte array to store the random number
-            byte[] randomNumber = new byte[4];
-
-            // Create an instance of RandomNumberGenerator
-            using (RandomNumberGenerator rng = RandomNumberGenerator.Create())
+            if (selectedMovieItem == null)
             {
-                // Fill the byte array with random numbers
-                rng.GetBytes(randomNumber);
+                MessageBox.Show("Please select movie", "Select movie", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
             }
 
-            // Convert the byte array to an integer
-            int randomInt = BitConverter.ToInt32(randomNumber, 0);
+            if (selectedSeat == null)
+            {
+                MessageBox.Show("Please select seat", "Select seat", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
 
-            // Generate a positive random number within a specific range
-            int finalNumber = Math.Abs(randomInt % maxNumber) + 1;
+            Movie selectedMovie = (Movie)selectedMovieItem.DataContext;
 
-            return finalNumber;
+            // Create Ticket
+            string createTicketQuery = "INSERT INTO tickets (`row`, `column`, `movie_id`) VALUES (@row, @column, @movieID)";
+
+            MySqlCommand createTicketCommand = new MySqlCommand(createTicketQuery, connection);
+            createTicketCommand.Parameters.AddWithValue("@row", selectedSeat.Row);
+            createTicketCommand.Parameters.AddWithValue("@column", selectedSeat.Column);
+            createTicketCommand.Parameters.AddWithValue("@movieID", selectedMovie.ID);
+
+            connection.Open();
+
+            createTicketCommand.ExecuteNonQuery();
+
+            // Get ID of new ticket
+            int ticketID = (int)createTicketCommand.LastInsertedId;
+
+            connection.Close();
+
+            // Show Info about Ticket
+            ShowTicketMessageBox(ticketID);
+
+            RefreshMovies();
+
+        }
+
+        public static void RefreshMovies()
+        {
+            // Get new info
+            GetMoviesFromDatabase();
+            UpdateFilteredMovies();
+
+            // Reset
+            seatsDisplay.Children.Clear();
+            selectedMovieItem = null;
+            selectedSeat = null;
+        }
+
+        public static void UpdateFilteredMovies()
+        {
+            // Copy all movies into filteredMovies
+            filteredMovies = new ObservableCollection<Movie>(allMovies);
+
+            // Add filteredMovies to Movies items
+            Movies.ItemsSource = filteredMovies;
+        }
+
+        public static void ShowTicketMessageBox(int ticketID)
+        {
+            // Get info about ticket
+            Ticket ticket = Ticket.GetByID(ticketID);
+
+            MessageBox.Show($"Your ticket number is {ticketID}. Your ticket is valid for Movie: '{ticket.movie.Name}' at '{ticket.movie.Date}' at Row: '{ticket.Row}', Column: '{ticket.Column}'", "Ticket", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         public static void GetMoviesFromDatabase()
         {
-            string query = "SELECT * FROM movies";
+            string query = "SELECT * FROM movies WHERE datetime > @datenow ORDER BY datetime ASC";
 
             MySqlCommand command = new MySqlCommand(query, connection);
+            command.Parameters.AddWithValue("@datenow", DateTime.Now);
 
-            allMovies = new ObservableCollection<Movie>();
+            if (allMovies == null)
+            {
+                allMovies = new ObservableCollection<Movie>();
+            }
+            else
+            {
+                allMovies.Clear();
+            }
 
             connection.Open();
             using (MySqlDataReader reader = command.ExecuteReader())
@@ -94,27 +136,34 @@ namespace Cinemania
                 {
                     int ID = reader.GetInt32("ID");
                     string name = reader.GetString("name");
-                    Seat[] seats = JsonSerializer.Deserialize<Seat[]>(reader.GetString("seats"));
                     DateTime datetime = reader.GetDateTime("datetime");
-                    int reserved = reader.GetInt16("user_reserved");
 
-                    Movie movie = new Movie(ID, name, datetime, seats, reserved == 1);
+                    Movie movie = new Movie(ID, name, datetime);
                     allMovies.Add(movie);
                 }
             }
             connection.Close();
 
+            // Get occupied seats from databse
+            foreach (Movie movie in allMovies)
+            {
+                movie.GetSeatsFromDatabase();
+            }
+
         }
 
-        public static void CreateTable()
+        public static void CreateTableIfNotExists()
         {
             // Exported queries from Database
-            string tableQuery = "CREATE TABLE IF NOT EXISTS `movies` (\r\n  `ID` int unsigned NOT NULL AUTO_INCREMENT,\r\n  `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'Movie Name',\r\n  `seats` json DEFAULT NULL,\r\n  `datetime` datetime DEFAULT NULL,\r\n  `user_reserved` tinyint DEFAULT NULL,\r\n  PRIMARY KEY (`ID`),\r\n  UNIQUE KEY `ID` (`ID`)\r\n)";
+            string moviesQuery = "CREATE TABLE IF NOT EXISTS `movies` (\r\n  `ID` int unsigned NOT NULL AUTO_INCREMENT,\r\n  `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'Movie Name',\r\n  `datetime` datetime DEFAULT NULL,\r\n  PRIMARY KEY (`ID`),\r\n  UNIQUE KEY `ID` (`ID`)\r\n)";
+            string ticketsQuery = "CREATE TABLE IF NOT EXISTS `tickets` (\r\n  `id` int NOT NULL AUTO_INCREMENT,\r\n  `movie_id` int unsigned NOT NULL,\r\n  `row` int NOT NULL,\r\n  `column` int NOT NULL,\r\n  PRIMARY KEY (`id`),\r\n  UNIQUE KEY `id` (`id`),\r\n  KEY `FK_tickets_movies` (`movie_id`),\r\n  CONSTRAINT `FK_tickets_movies` FOREIGN KEY (`movie_id`) REFERENCES `movies` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE\r\n)";
 
-            MySqlCommand tableCommand = new MySqlCommand(tableQuery, connection);
+            MySqlCommand moviesCommand = new MySqlCommand(moviesQuery, connection);
+            MySqlCommand ticketsCommand = new MySqlCommand(ticketsQuery, connection);
 
             connection.Open();
-            tableCommand.ExecuteNonQuery();
+            moviesCommand.ExecuteNonQuery();
+            ticketsCommand.ExecuteNonQuery();
             connection.Close();
         }
 

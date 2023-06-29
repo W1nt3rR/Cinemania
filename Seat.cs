@@ -14,20 +14,18 @@ namespace Cinemania
     {
         // Rectnagle representing a seat
         public Rectangle rectangle;
-        public bool Reserved { get; set; } = false;
         public bool Taken { get; set; }
         public int Row { get; set; }
         public int Column { get; set; }
 
-        public Seat(int row, int column, bool taken, bool reserved = false)
+        public Seat(int row, int column, bool taken)
         {
             this.Row = row;
             this.Column = column;
             this.Taken = taken;
-            this.Reserved = reserved;
 
             // Set color based on if it the seat is taken
-            Brush customColor = this.Reserved ? new SolidColorBrush(Colors.Purple) : this.Taken ? new SolidColorBrush(Colors.Red) : new SolidColorBrush(Colors.Green);
+            Brush customColor = this.Taken ? new SolidColorBrush(Colors.Red) : new SolidColorBrush(Colors.Green);
 
             // Create a rectangle representing a seat
             this.rectangle = new Rectangle
@@ -58,31 +56,40 @@ namespace Cinemania
                 return;
             }
 
-            Rectangle clickedRectangle = (Rectangle)sender;
-
-            bool movieReserved = Store.GetSelectedMovieReservedStatus();
-
-            // Allow only one reservation for User
-            if (movieReserved && Reserved)
+            // Emulate selecion of a seat
+            if (Store.selectedSeat == null)
             {
-                Store.SetSelectedMovieReservedStatus(false);
-                this.Reserved = false;
-                clickedRectangle.Fill = new SolidColorBrush(Colors.Green);
-                Store.UpdateSelectedMovieInDatabase();
+                Store.selectedSeat = this;
+                SelectSeat();
             }
-            else if (!movieReserved && !Reserved)
-            {
-                Store.SetSelectedMovieReservedStatus(true);
-                this.Reserved = true;
-                clickedRectangle.Fill = new SolidColorBrush(Colors.Purple);
-                Store.UpdateSelectedMovieInDatabase();
-            } 
             else
             {
-                MessageBox.Show("You can only Reserve one seat.", "Seat already reserved", MessageBoxButton.OK, MessageBoxImage.Information);
-                return;
+                Store.selectedSeat.UnselectSeat();
+                Store.selectedSeat = this;
+                SelectSeat();
             }
 
+        }
+
+        private void SetColor(Color color)
+        {
+            this.rectangle.Fill = new SolidColorBrush(color);
+        }
+
+        public void OccupySeat()
+        {
+            Taken = true;
+            SetColor(Colors.Red);
+        }
+
+        private void SelectSeat()
+        {
+            SetColor(Colors.Purple);
+        }
+
+        private void UnselectSeat()
+        {
+            SetColor(Colors.Green);
         }
 
         private void SeatEnter(object sender, RoutedEventArgs e)

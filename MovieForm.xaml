@@ -7,31 +7,78 @@
         mc:Ignorable="d"
         Title="MovieForm" Height="300" Width="400">
     <Grid>
+
         <TextBox
             HorizontalAlignment="Center"
-            Margin="0,83,0,0"
+            Margin="0,73,0,0"
             TextWrapping="Wrap"
             VerticalAlignment="Top"
             Width="250"
-            Height="27"
+            Height="20"
             x:Name="MovieName"
         />
+
         <DatePicker
             HorizontalAlignment="Center"
-            Margin="0,150,0,0"
+            Margin="0,132,0,0"
             VerticalAlignment="Top"
             x:Name="Date"
         />
-        <Label Content="Movie Name" HorizontalAlignment="Center" Margin="0,52,0,0" VerticalAlignment="Top" Width="250"/>
-        <Label Content="Select Date" HorizontalAlignment="Center" Margin="0,119,0,0" VerticalAlignment="Top" Width="102"/>
-        
+        <Label
+            Content="Movie Name"
+            HorizontalAlignment="Center"
+            Margin="0,42,0,0"
+            VerticalAlignment="Top"
+            Width="250"
+        />
+
+        <Label
+            Content="Select Date and Time"
+            HorizontalAlignment="Center"
+            Margin="0,101,0,0"
+            VerticalAlignment="Top"
+            Width="102"
+        />
+
         <Button
             Content="Add"
             HorizontalAlignment="Center"
-            Margin="0,227,0,0"
+            Margin="0,209,0,0"
             VerticalAlignment="Top"
             Width="64"
             Click="Close"
+        />
+
+        <TextBox
+            HorizontalAlignment="Left"
+            Margin="201,182,0,0"
+            TextWrapping="Wrap"
+            VerticalAlignment="Top"
+            Width="47"
+            x:Name="minutes"
+        />
+
+        <TextBox
+            HorizontalAlignment="Left"
+            Margin="153,182,0,0"
+            TextWrapping="Wrap"
+            VerticalAlignment="Top"
+            Width="47"
+            x:Name="hours"
+        />
+
+        <Label
+            Content="HH"
+            HorizontalAlignment="Left"
+            Margin="157,156,0,0"
+            VerticalAlignment="Top"
+        />
+
+        <Label
+            Content="MM"
+            HorizontalAlignment="Left"
+            Margin="200,156,0,0"
+            VerticalAlignment="Top"
         />
 
     </Grid>

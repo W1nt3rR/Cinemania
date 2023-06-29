@@ -16,49 +16,49 @@ namespace Cinemania
         public int ID { get; set; }
         public string Name { get; set; }
         public DateTime Date { get; set; }
-        public bool Reserved { get; set; }
 
         public ObservableCollection<Seat> seats;
 
-        public Movie(int id, string name, DateTime date, Seat[] seats = null, bool reserved = false)
+        public Movie(int id, string name, DateTime date)
         {
             this.ID = id;
             this.Name = name;
             this.Date = date;
-            this.Reserved = reserved;
+        }
 
-            // Create new random seats
-            if (seats == null)
-                CreateRandomSeats();
-            else
-                this.seats = new ObservableCollection<Seat>(seats);
+        public static Movie GetByID(int movieID)
+        {
+            string query = "SELECT * FROM movies WHERE id = @movieID";
+
+            MySqlCommand command = new MySqlCommand(query, Store.connection);
+            command.Parameters.AddWithValue("@movieID", movieID);
+
+            Movie movie = null;
+
+            Store.connection.Open();
+            using (MySqlDataReader reader = command.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    int ID = reader.GetInt32("ID");
+                    string name = reader.GetString("name");
+                    DateTime datetime = reader.GetDateTime("datetime");
+
+                    movie = new Movie(ID, name, datetime);
+                }
+            }
+            Store.connection.Close();
+
+            return movie;
         }
 
         public void StoreToDatabase()
         {
-            string query = "INSERT INTO movies (name, seats, datetime, user_reserved) VALUES (@Name, @seats, @datetime, @user_reserved)";
+            string query = "INSERT INTO movies (name, datetime) VALUES (@Name, @datetime)";
 
             MySqlCommand command = new MySqlCommand(query, Store.connection);
             command.Parameters.AddWithValue("@name", Name);
-            command.Parameters.AddWithValue("@seats", JsonSerializer.Serialize(seats));
             command.Parameters.AddWithValue("@datetime", Date);
-            command.Parameters.AddWithValue("@user_reserved", Reserved);
-
-            Store.connection.Open();
-            command.ExecuteNonQuery();
-            Store.connection.Close();
-        }
-
-        public void UpdateInDatabase()
-        {
-            string query = "UPDATE movies SET name = @name, seats = @seats, datetime = @datetime, user_reserved = @user_reserved WHERE ID = @id";
-
-            MySqlCommand command = new MySqlCommand(query, Store.connection);
-            command.Parameters.AddWithValue("@id", ID);
-            command.Parameters.AddWithValue("@name", Name);
-            command.Parameters.AddWithValue("@seats", JsonSerializer.Serialize(seats));
-            command.Parameters.AddWithValue("@datetime", Date);
-            command.Parameters.AddWithValue("@user_reserved", Reserved);
 
             Store.connection.Open();
             command.ExecuteNonQuery();
@@ -101,7 +101,7 @@ namespace Cinemania
 
         }
 
-        private void CreateRandomSeats()
+        private void CreateEmptySeats()
         {
             seats = new ObservableCollection<Seat> { };
 
@@ -109,15 +109,41 @@ namespace Cinemania
             {
                 for (int column = 0; column < Store.columns; column++)
                 {
-                    // Generate a random Number
-                    var num = Store.GenerateRandomNumber(100);
-
-                    // Randomize taken seats
-                    bool taken = (num > 75) || false;
-
-                    seats.Add(new Seat(row, column, taken));
+                    seats.Add(new Seat(row, column, false));
                 }
             }
+
+        }
+
+        public void GetSeatsFromDatabase()
+        {
+            string query = "SELECT * FROM tickets WHERE movie_id = @movieID";
+
+            MySqlCommand command = new MySqlCommand(query, Store.connection);
+            command.Parameters.AddWithValue("@movieID", ID);
+
+            CreateEmptySeats();
+
+            Store.connection.Open();
+            using (MySqlDataReader reader = command.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    int Row = reader.GetInt32("row");
+                    int Column = reader.GetInt32("column");
+
+                    // Occupy Seats
+                    foreach (Seat seat in seats)
+                    {
+                        if (seat.Column == Column && seat.Row == Row)
+                        {
+                            seat.OccupySeat();
+                        }
+                    }
+
+                }
+            }
+            Store.connection.Close();
 
         }
 

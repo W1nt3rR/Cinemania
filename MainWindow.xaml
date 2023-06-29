@@ -44,16 +44,57 @@
             Margin="20,20,0,20" HorizontalAlignment="Left" Width="160"
         />
 
-        <Button 
+        <!--Add Movie Button for Administrators-->
+        <!--<Button 
             Content="Add"
             Grid.Column="2"
-            Margin="0,16,16,16"
+            Margin="0,16,224,16"
             HorizontalAlignment="Right"
             Width="64"
             BorderBrush="{x:Null}"
             BorderThickness="0,0,0,0"
-            Name="button1"
             Click="OpenMovieForm"
+        >
+            <Button.Resources>
+                <Style TargetType="{x:Type Border}">
+                    <Setter
+                        Property="CornerRadius"
+                        Value="7"
+                    />
+                </Style>
+            </Button.Resources>
+        </Button>-->
+
+        <Button 
+            Content="Cancel Ticket"
+            Grid.Column="2"
+            Margin="0,16,120,16"
+            HorizontalAlignment="Right"
+            Width="96"
+            BorderBrush="{x:Null}"
+            BorderThickness="0,0,0,0"
+            Click="CancelTicket"
+        >
+            <Button.Resources>
+                <Style TargetType="{x:Type Border}">
+                    <Setter
+                        Property="CornerRadius"
+                        Value="7"
+                    />
+                </Style>
+            </Button.Resources>
+        </Button>
+
+        <Button 
+            Content="Reserve Ticket"
+            Grid.Column="2"
+            Margin="0,16,16,16"
+            HorizontalAlignment="Right"
+            Width="96"
+            BorderBrush="{x:Null}"
+            BorderThickness="0,0,0,0"
+            Name="Reserve"
+            Click="ReserveTicket"
         >
             <Button.Resources>
                 <Style TargetType="{x:Type Border}">

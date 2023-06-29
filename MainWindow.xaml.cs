@@ -22,28 +22,24 @@ namespace Cinemania
     /// </summary>
     public partial class MainWindow : Window
     {
-        public ObservableCollection<Movie> filteredMovies;
-
         public MainWindow()
         {
             InitializeComponent();
             
             Store.seatsDisplay = SeatsDisplay;
+            Store.Movies = Movies;
 
             // Initialize Database Connection
             Store.connection = new MySqlConnection(Store.connectionString);
 
             // Initialize Tables
-            Store.CreateTable();
+            Store.CreateTableIfNotExists();
 
             // Load movies from Database
             Store.GetMoviesFromDatabase();
 
-            // Copy all movies into filteredMovies
-            filteredMovies = new ObservableCollection<Movie>(Store.allMovies);
-
-            // Add filteredMovies to Movies items
-            Movies.ItemsSource = filteredMovies;
+            // Update filtered Movies
+            Store.UpdateFilteredMovies();
 
             // Setup Event Handlers
             PickedDate.SelectedDateChanged += HandleDateChanged;
@@ -58,15 +54,28 @@ namespace Cinemania
 
             // Get movie Data
             string name = movieForm.MovieName.Text;
+            int hours;
+            int minutes;
+
+            try
+            {
+                hours = int.Parse(movieForm.hours.Text);
+                minutes = int.Parse(movieForm.minutes.Text);
+            }
+            catch (Exception)
+            {
+                return;
+            }
 
             // Validation
-            if (name == "")
+            if (name == "" || hours < 0 || hours > 23 || minutes < 0 || minutes > 59)
                 return;
 
             // Return if no date provided
             DateTime date;
             try
             {
+                // Get selected Date
                 date = (DateTime)movieForm.Date.SelectedDate;
             }
             catch (Exception)
@@ -74,24 +83,17 @@ namespace Cinemania
                 return;
             }
 
+            // Add hours and minutes
+            date = date.Add(new TimeSpan(hours, minutes, 0));
+
             // Create movie based on given Data
             Movie movie = new Movie(0, name, date);
 
-            // Store movie to databse to get ID
+            // Store movie
             movie.StoreToDatabase();
 
-            // Get all movies including new movie
-            Store.GetMoviesFromDatabase();
-
-            // Update filteredMovies list to show new movie
-            UpdateFilteredMovies();
-        }
-
-        private void UpdateFilteredMovies()
-        {
-            // Updates filtered list
-            filteredMovies = new ObservableCollection<Movie>(Store.allMovies);
-            Movies.ItemsSource = filteredMovies;
+            // Refresh movies
+            Store.RefreshMovies();
         }
 
         private void HandleDateChanged(object sender, RoutedEventArgs e)
@@ -99,7 +101,7 @@ namespace Cinemania
             // Return full list if date is not set
             if (PickedDate.SelectedDate == null)
             {
-                UpdateFilteredMovies();
+                Store.UpdateFilteredMovies();
                 return;
             }
 
@@ -107,14 +109,14 @@ namespace Cinemania
             DateTime date = (DateTime)PickedDate.SelectedDate;
 
             // Clear the current filtered list of Movies
-            filteredMovies.Clear();
+            Store.filteredMovies.Clear();
 
             // Filter movies by date
             foreach (Movie movie in Store.allMovies)
             {
                 if (movie.Date.Date == date.Date)
                 {
-                    filteredMovies.Add(movie);
+                    Store.filteredMovies.Add(movie);
                 }
             }
 
@@ -176,6 +178,36 @@ namespace Cinemania
             // Re-render seats to new size
             Movie selectedMovie = (Movie)Store.selectedMovieItem.DataContext;
             selectedMovie.RenderSeats();
+        }
+
+        public void ReserveTicket(object sender, RoutedEventArgs e)
+        {
+            Store.ReserveTicket();
+        }
+
+        public void CancelTicket(object sender, RoutedEventArgs e)
+        {
+            // Open form
+            CancelTicketForm cancelTicketForm = new CancelTicketForm();
+            cancelTicketForm.ShowDialog();
+
+            int ticketID;
+
+            // Get ticket id from user
+            try
+            {
+                ticketID = int.Parse(cancelTicketForm.TicketID.Text);
+            }
+            catch (Exception)
+            {
+                return;
+            }
+
+            // Remove ticket from DB
+            Ticket.CancelTicket(ticketID);
+
+            // Update movies
+            Store.RefreshMovies();
         }
 
     }
