@@ -105,6 +105,7 @@ namespace Cinemania
             // Remove hover effect
             Rectangle clickedRectangle = sender as Rectangle;
             clickedRectangle.StrokeThickness = 1;
+            clickedRectangle.Stroke = new SolidColorBrush(Colors.Black);
         }
 
         public void SetSize(double rectangleSize)
