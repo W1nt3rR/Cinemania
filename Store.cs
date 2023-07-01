@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using MySql.Data.MySqlClient;
 using Syncfusion.Windows.Forms.Chart.SvgBase;
-using System.Text.Json;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Data;
