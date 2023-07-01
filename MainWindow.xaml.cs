@@ -138,6 +138,12 @@ namespace Cinemania
             moveItemBorder.BorderBrush = new SolidColorBrush(Colors.Magenta);
             moveItemBorder.BorderThickness = new Thickness(3);
 
+            if (Store.selectedSeat != null)
+            {
+                Store.selectedSeat.UnselectSeat();
+                Store.selectedSeat = null;
+            }
+
             // Render seats of a selected movie
             Movie selectedMovie = (Movie)Store.selectedMovieItem.DataContext;
             selectedMovie.RenderSeats();

@@ -82,12 +82,12 @@ namespace Cinemania
             SetColor(Colors.Red);
         }
 
-        private void SelectSeat()
+        public void SelectSeat()
         {
             SetColor(Colors.Purple);
         }
 
-        private void UnselectSeat()
+        public void UnselectSeat()
         {
             SetColor(Colors.Green);
         }
